@@ -26,11 +26,13 @@ type Middlewares struct {
 type Services struct {
 	app.AuthService
 	app.UserService
+	app.TaskService
 }
 
 type Controllers struct {
 	AuthController controllers.AuthController
 	UserController controllers.UserController
+	TaskController controllers.TaskController
 }
 
 func New(conf config.Configuration) Container {
@@ -39,12 +41,15 @@ func New(conf config.Configuration) Container {
 
 	sessionRepository := database.NewSessRepository(sess)
 	userRepository := database.NewUserRepository(sess)
+	taskRepository := database.NewTaskRepository(sess)
 
 	userService := app.NewUserService(userRepository)
 	authService := app.NewAuthService(sessionRepository, userRepository, tknAuth, conf.JwtTTL)
+	taskService := app.NewTaskService(taskRepository)
 
 	authController := controllers.NewAuthController(authService, userService)
 	userController := controllers.NewUserController(userService, authService)
+	taskController := controllers.NewTaskController(taskService)
 
 	authMiddleware := middlewares.AuthMiddleware(tknAuth, authService, userService)
 
@@ -55,10 +60,12 @@ func New(conf config.Configuration) Container {
 		Services: Services{
 			authService,
 			userService,
+			taskService,
 		},
 		Controllers: Controllers{
 			authController,
 			userController,
+			taskController,
 		},
 	}
 }

@@ -49,6 +49,7 @@ func Router(cont container.Container) http.Handler {
 				apiRouter.Use(cont.AuthMw)
 
 				UserRouter(apiRouter, cont.UserController)
+				TaskRouter(apiRouter, cont.TaskController)
 				apiRouter.Handle("/*", NotFoundJSON())
 			})
 		})
@@ -62,7 +63,6 @@ func Router(cont container.Container) http.Handler {
 		fs := http.StripPrefix(pathPrefix, http.FileServer(filesDir))
 		fs.ServeHTTP(w, r)
 	})
-
 	return router
 }
 
@@ -83,7 +83,7 @@ func AuthRouter(r chi.Router, ac controllers.AuthController, amw func(http.Handl
 	})
 }
 
-func UserRouter(r chi.Router, uc controllers.UserController) {
+func UserRouter(r chi.Router, uc controllers.UserController) { //звязує запит та контроллер
 	r.Route("/users", func(apiRouter chi.Router) {
 		apiRouter.Get(
 			"/",
@@ -97,6 +97,24 @@ func UserRouter(r chi.Router, uc controllers.UserController) {
 			"/",
 			uc.Delete(),
 		)
+	})
+}
+
+func TaskRouter(r chi.Router, tc controllers.TaskController) { //звязує запит та контроллер
+	r.Route("/tasks", func(apiRouter chi.Router) {
+		apiRouter.Post(
+			"/",       //pattern
+			tc.Save(), //функція обробника цього запиту
+		)
+
+		apiRouter.Get(
+			"/",               //pattern
+			tc.FindByUserId(), //функція обробника цього запиту
+		)
+		/*apiRouter.Delete(
+			"/{taskId}",         //pattern
+			tc.DeleteByTaskId(), //функція обробника цього запиту
+		)*/
 	})
 }
 

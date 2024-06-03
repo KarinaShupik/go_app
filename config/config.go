@@ -20,10 +20,10 @@ type Configuration struct {
 
 func GetConfiguration() Configuration {
 	return Configuration{
-		DatabaseName:        getOrDefault("DB_NAME", "db-name"),
+		DatabaseName:        getOrDefault("DB_NAME", "gr8-db"),
 		DatabaseHost:        getOrDefault("DB_HOST", "127.0.0.1:5432"),
 		DatabaseUser:        getOrDefault("DB_USER", "postgres"),
-		DatabasePassword:    getOrDefault("DB_PASSWORD", "postgres"),
+		DatabasePassword:    getOrDefault("DB_PASSWORD", "1"),
 		MigrateToVersion:    getOrDefault("MIGRATE", "latest"),
 		MigrationLocation:   getOrDefault("MIGRATION_LOCATION", "internal/infra/database/migrations"),
 		FileStorageLocation: getOrDefault("FILES_LOCATION", "file_storage"),

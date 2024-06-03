@@ -16,6 +16,7 @@ type CtxKey struct {
 
 var (
 	UserKey = CtxKey{Name: "user"}
+	TaskKey = CtxKey{Name: "task"}
 	SessKey = CtxKey{Name: "sess"}
 )
 
