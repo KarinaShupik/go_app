@@ -10,7 +10,7 @@ import (
 type TaskService interface {
 	Save(t domain.Task) (domain.Task, error)
 	FindByUserId(uId uint64) ([]domain.Task, error)
-	//DeleteByTaskId(taskId uint64) ([]domain.Task, error)
+	DeleteByTaskId(taskId uint64) error
 	FindByTaskId(tId uint64) (domain.Task, error)
 }
 
@@ -45,16 +45,14 @@ func (r taskService) FindByUserId(uId uint64) ([]domain.Task, error) {
 	//return r.mapModelToDomain(tsk), nil
 }
 
-/*
-func (r taskService) DeleteByTaskId(taskId uint64) ([]domain.Task, error) {
-	tasks, err := r.taskRepo.DeleteByTaskId(taskId)
+func (s taskService) DeleteByTaskId(taskId uint64) error {
+	err := s.taskRepo.DeleteByTaskId(taskId)
 	if err != nil {
-		log.Printf("UserService: %s", err)
-		return nil, err
+		log.Printf("TaskService -> DeleteByTaskId %s", err)
+		return err
 	}
-
-	return tasks, nil
-}*/
+	return nil
+}
 
 func (s taskService) FindByTaskId(taskId uint64) (domain.Task, error) {
 	task, err := s.taskRepo.FindByTaskId(taskId)

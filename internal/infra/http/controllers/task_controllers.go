@@ -134,19 +134,26 @@ func (c TaskController) FindByTaskId() http.HandlerFunc {
 	}
 }
 
-/*
 func (c TaskController) DeleteByTaskId() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		u := r.Context().Value(UserKey).(domain.User)
-
-		err := c.taskService.DeleteByTaskId(u.Id)
+		taskId, err := requests.ParseTaskId(r)
 		if err != nil {
-			log.Printf("UserController: %s", err)
+			log.Printf("TaskController -> DeleteByTaskId: %s", err)
+			BadRequest(w, err)
+			return
+		}
+
+		err = c.taskService.DeleteByTaskId(taskId)
+		if err != nil {
+			log.Printf("TaskController -> DeleteByTaskId: %s", err)
 			InternalServerError(w, err)
 			return
 		}
 
-		Ok(w)
+		NoContent(w)
 	}
 }
-*/
+
+func NoContent(w http.ResponseWriter) {
+	w.WriteHeader(http.StatusNoContent)
+}
