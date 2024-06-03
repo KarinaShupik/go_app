@@ -61,57 +61,6 @@ func (c TaskController) FindByUserId() http.HandlerFunc {
 	}
 }
 
-/*
-func GetTaskIdFromRequest(r *http.Request) (uint64, error) {
-	// Extract the path from the request
-	urlPath := r.URL.Path
-
-	// Split the path by "/" to get segments
-	pathSegments := strings.Split(urlPath, "/")
-
-	// Check if there are enough segments (base_url + /tasks/ + ID)
-	if len(pathSegments) < 3 {
-		return 0, errors.New("Invalid URL format for task ID")
-	}
-
-	// The third segment should be the ID
-	taskIdStr := pathSegments[2]
-
-	// Convert the ID string to uint64
-	taskId, err := strconv.ParseUint(taskIdStr, 10, 64)
-	if err != nil {
-		return 0, errors.New("Invalid task ID format")
-	}
-
-	return taskId, nil
-}*/
-/*
-func (c TaskController) FindByTaskId() http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		// Extract task ID from the URL
-		taskIdStr := chi.URLParam(r, "taskId") // Access the "taskId" path parameter
-
-		// Convert the ID string to uint64
-		taskId, err := strconv.ParseUint(taskIdStr, 10, 64)
-		// Call task service to find task
-		task, err := c.taskService.FindByTaskId(taskId)
-		if err != nil {
-			if errors.Is(err, ErrTaskNotFound) { // Handle specific task not found error
-				NotFound(w, "Task not found")
-				return
-			}
-			log.Printf("TaskController -> FindById: %s", err)
-			InternalServerError(w, err)
-			return
-		}
-
-		// Convert task to DTO and respond (assuming you want the full task data)
-		var tDto resources.TaskDto
-		tDto = tDto.DomainToDto(task)
-		Success(w, tDto)
-	}
-}*/
-
 func (c TaskController) FindByTaskId() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		taskId, err := requests.ParseTaskId(r)
@@ -153,16 +102,6 @@ func (c TaskController) DeleteByTaskId() http.HandlerFunc {
 		noContent(w)
 	}
 }
-
-/*func NoContent(w http.ResponseWriter) {
-	w.WriteHeader(http.StatusNoContent)
-}
-
-func SuccessUpdate(w http.ResponseWriter, data interface{}) {
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(data)
-}*/
 
 func (c TaskController) UpdateByTaskId() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
