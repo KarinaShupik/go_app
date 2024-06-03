@@ -58,5 +58,4 @@ func main() {
 		exitCode = 2
 		return
 	}
-
 }

@@ -111,10 +111,15 @@ func TaskRouter(r chi.Router, tc controllers.TaskController) { //звязує з
 			"/",               //pattern
 			tc.FindByUserId(), //функція обробника цього запиту
 		)
-		/*apiRouter.Delete(
-			"/{taskId}",         //pattern
-			tc.DeleteByTaskId(), //функція обробника цього запиту
-		)*/
+		apiRouter.Get(
+			"/",               //pattern
+			tc.FindByUserId(), //функція обробника цього запиту
+		)
+		apiRouter.Get(
+			"/{taskId}",
+			tc.FindByTaskId(),
+		)
+
 	})
 }
 

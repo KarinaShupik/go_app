@@ -25,6 +25,7 @@ type TaskRepositiry interface {
 	Save(t domain.Task) (domain.Task, error)
 	FindByUserId(uId uint64) ([]domain.Task, error)
 	//DeleteByTaskId(taskId uint64) ([]domain.Task, error)
+	FindByTaskId(taskId uint64) (domain.Task, error)
 }
 
 type taskRepository struct {
@@ -82,6 +83,25 @@ func (r taskRepository) DeleteByTaskId(taskId uint64) ([]domain.Task, error) {
 	result := r.mapModelToDomainCollection(tasks)
 	return result, nil
 }*/
+/*
+func (r taskRepository) FindByTaskId(taskId uint64) (domain.Task, error) {
+	var task task
+	err := r.coll.Find(db.Cond{"id": taskId}).One(&task)
+	if err != nil {
+		return domain.Task{}, nil // Task not found
+	}
+	return r.mapModelToDomain(task), nil
+}*/
+
+func (r taskRepository) FindByTaskId(taskId uint64) (domain.Task, error) {
+	var tsk task
+	err := r.coll.Find(db.Cond{"id": taskId, "deleted_date": nil}).One(&tsk)
+	if err != nil {
+		return domain.Task{}, err
+	}
+
+	return r.mapModelToDomain(tsk), nil
+}
 
 // перетаорення в домайн та з домейну
 func (r taskRepository) mapDomainToModel(t domain.Task) task {

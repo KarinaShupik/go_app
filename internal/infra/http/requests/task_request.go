@@ -1,9 +1,12 @@
 package requests
 
 import (
+	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/BohdanBoriak/boilerplate-go-back/internal/domain"
+	"github.com/go-chi/chi/v5"
 )
 
 type TaskRequest struct {
@@ -35,4 +38,13 @@ func (r TaskRequest) ToDomainModel() (interface{}, error) {
 		Description: r.Description,
 		Deadline:    deadline,
 	}, nil
+}
+
+func ParseTaskId(r *http.Request) (uint64, error) {
+	taskIdStr := chi.URLParam(r, "taskId")
+	taskId, err := strconv.ParseUint(taskIdStr, 10, 64)
+	if err != nil {
+		return 0, err
+	}
+	return taskId, nil
 }
