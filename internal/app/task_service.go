@@ -12,6 +12,7 @@ type TaskService interface {
 	FindByUserId(uId uint64) ([]domain.Task, error)
 	DeleteByTaskId(taskId uint64) error
 	FindByTaskId(tId uint64) (domain.Task, error)
+	UpdateByTaskId(t domain.Task) (domain.Task, error)
 }
 
 type taskService struct {
@@ -61,4 +62,13 @@ func (s taskService) FindByTaskId(taskId uint64) (domain.Task, error) {
 		return domain.Task{}, err
 	}
 	return task, nil
+}
+
+func (s taskService) UpdateByTaskId(t domain.Task) (domain.Task, error) {
+	updatedTask, err := s.taskRepo.UpdateByTaskId(t)
+	if err != nil {
+		log.Printf("TaskService -> UpdateByTaskId %s", err)
+		return domain.Task{}, err
+	}
+	return updatedTask, nil
 }

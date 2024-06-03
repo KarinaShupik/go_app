@@ -150,10 +150,49 @@ func (c TaskController) DeleteByTaskId() http.HandlerFunc {
 			return
 		}
 
-		NoContent(w)
+		noContent(w)
 	}
 }
 
-func NoContent(w http.ResponseWriter) {
+/*func NoContent(w http.ResponseWriter) {
 	w.WriteHeader(http.StatusNoContent)
+}
+
+func SuccessUpdate(w http.ResponseWriter, data interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(data)
+}*/
+
+func (c TaskController) UpdateByTaskId() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		taskId, err := requests.ParseTaskId(r)
+		if err != nil {
+			log.Printf("TaskController -> UpdateByTaskId: %s", err)
+			BadRequest(w, err)
+			return
+		}
+
+		taskReq, err := requests.Bind(r, requests.TaskRequest{}, domain.Task{})
+		if err != nil {
+			log.Printf("TaskController -> UpdateByTaskId: %s", err)
+			BadRequest(w, err)
+			return
+		}
+
+		user := r.Context().Value(UserKey).(domain.User)
+		taskReq.UserId = user.Id
+		taskReq.Id = taskId
+
+		updatedTask, err := c.taskService.UpdateByTaskId(taskReq)
+		if err != nil {
+			log.Printf("TaskController -> UpdateByTaskId: %s", err)
+			InternalServerError(w, err)
+			return
+		}
+
+		var tDto resources.TaskDto
+		tDto = tDto.DomainToDto(updatedTask)
+		Success(w, tDto)
+	}
 }

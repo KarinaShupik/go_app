@@ -15,6 +15,12 @@ type TaskRequest struct {
 	Deadline    *uint64 `json:"deadline"`
 }
 
+type UpdateTaskRequest struct {
+	Title    *string            `json:"title"`
+	Status   *domain.TaskStatus `json:"status"`
+	Deadline *uint64            `json:"deadline"`
+}
+
 func (r TaskRequest) ToDomainModel() (interface{}, error) {
 
 	var deadline *time.Time
